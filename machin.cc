@@ -35,7 +35,6 @@ void CPU::Execute(u8* code)
         o(0x02==in, CHOOSE(u, op, A)) /* one or two <- A register */ \
         o(0x03==in, CHOOSE(u, op, B)) /* one or two <- B register */ \
         o(0x04==in, CHOOSE(u, op, C)) /* one or two <- C register */ \
-        o(0x29==in, one = !one; op--)\
         o(0x30==in, *one += *two) /* same as add a, b */ \
         o(0x31==in, *one -= *two) /* same as sub a, b */ \
         o(0x32==in, *one |= *two) /* same as or a, b */  \
@@ -65,6 +64,8 @@ void CPU::Execute(u8* code)
             LIST(s, code[i], i, op);
         }
     }
+    #undef CHOOSE
+    #undef s
 }
 
 int main()
@@ -75,7 +76,7 @@ int main()
                 0x03, 0x02, 0x80, /* mov B, A */
                 0x03, 0x02, 0x31, /* sub B, A */
                 0x04, 0x02, 0x32, /* or C, A  */
-                0x02, 0x02, 0x34};
+                0x02, 0x02, 0x34}; /* xor B, B */
     cpu.Execute(run);
     printf(" A = %x\n B = %x\n C = %x\n", cpu.A, cpu.B, cpu.C);
 }
